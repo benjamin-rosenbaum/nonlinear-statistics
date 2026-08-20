@@ -1,0 +1,822 @@
+---
+title: "Fitting Nonlinear Models<br>with brms"
+subtitle: "A Bayesian introduction: growth curves, functional responses, TPCs"
+author: "Benjamin Rosenbaum"
+format:
+  revealjs:
+    theme: [white, custom.scss]
+    html-math-method: mathjax
+    width: 1280
+    height: 720
+    slide-number: true
+    code-fold: false
+    code-line-numbers: true
+    incremental: false
+    toc: false
+    embed-resources: true
+    code-overflow: scroll
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| echo: FALSE
+#| output: FALSE
+library(brms)
+library(ggplot2)
+library(dplyr)
+library(BayesFR)
+theme_set(theme_bw(base_size = 24))
+options(width = 120)
+```
+
+## {.unnumbered}
+
+<br>
+
+<br>
+
+1. Statistical modeling & Bayesian inference
+
+2. Fitting nonlinear curves with `brms`
+
+3. **Continuous & categorical treatment variables**
+
+4. Exercises
+
+
+## Continuous variable {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<div style="height: 32px;"></div>
+
+
+::: {style="background-color:  var(--highlight-high-bg); border-left: 4px solid var(--highlight-high-border); padding: 0.5em; border-radius: 0 8px 8px 0;"}
+**Hypothesis:** Predator size affects feeding rates.
+:::
+
+<div style="height: 32px;"></div>
+
+Predator size (head width) is numerical
+
+```{r}
+library(BayesFR) # contains dataset
+data(df_Davidson_et_al_2021_FUN_ECOL)
+df = subset(df_Davidson_et_al_2021_FUN_ECOL, 
+            Predator=="Erythemis simplicicollis")
+str(df)
+```
+
+
+:::
+
+::: {.column width="05%"}
+:::
+
+::: {.column width="45%"}
+
+<br>
+
+![](pictures/Eastern_Pondhawk.jpg){width="66%"}
+
+::: {style="opacity: 0.6; font-size: 0.30em;"}
+Source: https://commons.wikimedia.org/wiki/File:Eastern_Pondhawk_(Erythemis_simplicicollis),_Female_03.jpg   
+CC BY-SA 4.0
+:::
+
+:::
+
+::::
+
+## Continuous variable {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<div style="height: 32px;"></div>
+
+
+::: {style="background-color:  var(--highlight-high-bg); border-left: 4px solid var(--highlight-high-border); padding: 0.5em; border-radius: 0 8px 8px 0;"}
+**Hypothesis:** Predator size affects feeding rates.
+:::
+
+<div style="height: 32px;"></div>
+
+Predator size (head width) is numerical
+
+```{r}
+library(BayesFR) # contains dataset
+data(df_Davidson_et_al_2021_FUN_ECOL)
+df = subset(df_Davidson_et_al_2021_FUN_ECOL, 
+            Predator=="Erythemis simplicicollis")
+str(df)
+```
+
+```{r}
+#| echo: FALSE
+df$Feeding = df$NE
+df$N = df$N0
+```
+
+:::
+
+::: {.column width="05%"}
+:::
+
+::: {.column width="45%"}
+
+<br>
+
+```{r}
+#| echo: FALSE
+#| fig-height: 8
+set.seed(1701)
+p1 = ggplot(aes(N,Feeding, color=HeadWidth), data=df) +
+  geom_jitter(alpha=0.7, width=0.75, height=0.75, size=4) +
+  theme(legend.position = "inside",
+        legend.position.inside = c(0.15, 0.80),
+        legend.background = element_rect(fill="lightgray", color="white")
+  ) +
+  scale_colour_viridis_c() +
+  scale_x_continuous(limits=c(0,NA)) +
+  scale_y_continuous(limits=c(0,NA))
+p1
+```
+
+:::
+
+::::
+
+## Continuous variable {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<div style="height: 32px;"></div>
+
+#### Deterministic part: model formula
+
+<div style="height: 32px;"></div>
+
+
+$\text{Feeding} = \frac{\textcolor{var(--highlight-high-border)}{\boldsymbol{F_\max}}\cdot N}{\textcolor{var(--highlight-high-border)}{\boldsymbol{N_\text{\bf half}}}+N}$
+
+$F_\max=\beta_{0}+\beta_{1}\cdot\text{HeadWidth}$
+
+$N_\operatorname{half}$
+
+<div style="height: 32px;"></div>
+
+```{r}
+#| echo: FALSE
+df$N = df$N0
+df$Feeding = df$NE
+```
+
+
+```{r}
+#| eval: TRUE
+formula = bf(Feeding ~ fmax*N/(nhalf+N),
+             fmax  ~ scale(HeadWidth),
+             nhalf ~ 1,
+             nl = TRUE)
+```
+
+<div style="height: 32px;"></div>
+
+* Make parameters dependent on predictor(s)
+* Use classic `lm`-notation 
+* `scale()` the predictor to `mean=0`, `sd=1`    
+  can make pars more interpretable:   
+  intercept $\beta_{0}=F_\max$ for avg. $\text{HeadWidth}$
+
+:::
+
+::: {.column width="05%"}
+:::
+
+::: {.column width="45%"}
+
+<br>
+
+```{r}
+#| echo: FALSE
+#| fig-height: 8
+set.seed(1701)
+p1
+```
+
+:::
+
+::::
+
+
+## Continuous variable {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<div style="height: 32px;"></div>
+
+#### Priors
+
+<div style="height: 32px;"></div>
+
+
+$F_\max={\boldsymbol{\textcolor{var(--highlight-high-border)}{\beta_{0}}}}+{\boldsymbol{\textcolor{var(--highlight-high-border)}{\beta_{1}}}}\cdot\text{HeadWidth}$
+
+${\boldsymbol{\textcolor{var(--highlight-high-border)}{{N_\operatorname{half}}}}}$
+
+<div style="height: 32px;"></div>
+
+```{r}
+#| eval: TRUE
+default_prior(formula,
+              family = poisson(link="identity"),
+              data = df
+)
+```
+
+<div style="height: 32px;"></div>
+
+* First, check parameters structure and names
+
+:::
+
+::: {.column width="05%"}
+:::
+
+::: {.column width="45%"}
+
+<br>
+
+```{r}
+#| echo: FALSE
+#| fig-height: 8
+set.seed(1701)
+p1
+```
+
+:::
+
+::::
+
+## Continuous variable {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<div style="height: 32px;"></div>
+
+#### Priors
+
+<div style="height: 32px;"></div>
+
+
+$F_\max={\boldsymbol{\textcolor{var(--highlight-high-border)}{\beta_{0}}}}+{\boldsymbol{\textcolor{var(--highlight-high-border)}{\beta_{1}}}}\cdot\text{HeadWidth}$
+
+${\boldsymbol{\textcolor{var(--highlight-high-border)}{{N_\operatorname{half}}}}}$
+
+<div style="height: 32px;"></div>
+
+
+```{r}
+#| eval: TRUE
+priors = c(
+  prior(normal(40,20), nlpar="fmax", coef="Intercept"),
+  prior(normal(0 ,10), nlpar="fmax", coef="scaleHeadWidth"),
+  prior(normal(30,20), nlpar="nhalf", lb=0)
+)
+```
+
+<div style="height: 32px;"></div>
+
+* Weakly informative priors for intercept and slope of $F_\max$
+
+:::
+
+::: {.column width="05%"}
+:::
+
+::: {.column width="45%"}
+
+<br>
+
+```{r}
+#| echo: FALSE
+#| fig-height: 8
+set.seed(1701)
+p1
+```
+
+:::
+
+::::
+
+
+## Continuous variable {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+```{r}
+#| echo: FALSE
+#| output: FALSE
+#| fig-height: 8
+
+df$N = df$N0
+df$Feeding = df$NE
+
+formula = bf(Feeding ~ fmax*N/(nhalf+N),
+             fmax  ~ scale(HeadWidth),
+             nhalf ~ 1,
+             nl = TRUE)
+priors = c(
+  prior(normal(20,10), nlpar="fmax", lb=0),
+  prior(normal(15,10), nlpar="nhalf", lb=0)
+)
+fit.1 = brm(formula,
+            prior = priors,
+            family = poisson(link="identity"),
+            data = df,
+            backend = "cmdstan",
+            file = "fit_example_4_1.rds")
+```
+
+
+```{r}
+#| eval: FALSE
+fit.1 = brm(formula,
+            prior = priors,
+            family = poisson(link="identity"),
+            data = df)
+
+summary(fit.1)
+```
+
+```{r}
+#| echo: FALSE
+summary(fit.1)
+```
+
+
+:::
+
+::: {.column width="05%"}
+:::
+
+::: {.column width="45%"}
+
+
+```{r}
+#| eval: FALSE
+plot(conditional_effects(fit.1,
+                         effects="N:HeadWidth"),
+     points = TRUE)
+```
+
+```{r}
+#| echo: FALSE
+#| fig-height: 8
+set.seed(1701)
+p = plot(conditional_effects(fit.1,
+                             effects="N:HeadWidth",
+                             int_conditions = list(N=1:80)),
+         points = TRUE,
+         point_args = list(alpha=0.5, width=0.5, height=0.5, size=2.5),
+         plot = FALSE)
+p[[1]] +   
+  theme(legend.position = "inside",
+        legend.position.inside = c(0.15, 0.85),
+        legend.background = element_rect(fill="lightgray", color="white")
+  ) +
+  scale_x_continuous(limits=c(0,NA)) +
+  scale_y_continuous(limits=c(0,NA))
+```
+
+* Automatically uses 3 levels for the predictor: $\mu,~~\mu+1\sigma,~~\mu-1\sigma$ 
+
+:::
+
+::::
+
+
+## Continuous variable {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+#### Trends
+```{r}
+fixef(fit.1)
+```
+$F_\max$ increases by $\beta_1=9.72$ per $1\sigma$ increase in size
+
+<div style="height: 32px;"></div>
+
+scale back to original scale
+```{r}
+fixef(fit.1)["fmax_scaleHeadWidth", "Estimate"] / sd(df$HeadWidth)
+```
+
+<div style="height: 32px;"></div>
+
+or just use `emmeans`
+```{r}
+library(emmeans)
+em_trend = emtrends(fit.1, var="HeadWidth", nlpar="fmax") 
+print(em_trend)
+```
+
+
+:::
+
+::: {.column width="05%"}
+:::
+
+::: {.column width="45%"}
+
+<div style="height: 1.5em;"></div>
+
+```{r}
+#| eval: TRUE
+#| fig-height: 8
+plot(conditional_effects(fit.1,
+                         effects="HeadWidth",
+                         nlpar="fmax"))
+```
+
+:::
+
+::::
+
+## Continuous variable {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+#### Hypothesis testing
+
+```{r}
+hypothesis(fit.1, 
+           "fmax_scaleHeadWidth > 0")
+```
+
+<div style="height: 32px;"></div>
+
+
+Posterior probability:
+
+$P(\beta_1>0)=1.00$
+
+<div style="height: 32px;"></div>
+
+::: {style="background-color:  var(--highlight-high-bg); border-left: 4px solid var(--highlight-high-border); padding: 0.5em; border-radius: 0 8px 8px 0;"}
+<span style="font-size: 1.0em;">
+**→ Yes, feeding rates are positively affected by predator size.**
+</span>
+:::
+
+
+:::
+
+::: {.column width="05%"}
+:::
+
+::: {.column width="45%"}
+
+<div style="height: 1.5em;"></div>
+
+```{r}
+#| fig-height: 8
+p = plot(
+  hypothesis(fit.1,
+             "fmax_scaleHeadWidth > 0"),
+  plot = FALSE
+)
+p[[1]] + geom_vline(xintercept=0)
+```
+
+<div style="height: 1.5em;"></div>
+
+
+:::
+
+::::
+
+
+
+## Continuous variable with link{.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<div style="height: 32px;"></div>
+
+#### Deterministic part: positive parameters
+
+<div style="height: 32px;"></div>
+
+$\text{Feeding} = \frac{\textcolor{black}{{F_\max}}\cdot N}{\textcolor{black}{{N_\text{half}}}+N}$
+
+$$
+\begin{align}
+F_\max&=\textcolor{var(--highlight-high-border)}{\boldsymbol{\exp}}\left( \beta_{0}+\beta_{1}\cdot\text{HeadWidth}\right)\textcolor{var(--highlight-high-border)}{\boldsymbol{\ >0}}\\
+\Leftrightarrow \textcolor{var(--highlight-high-border)}{\boldsymbol{\log}}\left( F_\max\right)& =\beta_{0}+\beta_{1}\cdot\text{HeadWidth}
+\end{align}
+$$
+
+
+<div style="height: 32px;"></div>
+
+```{r}
+#| echo: FALSE
+df$N = df$N0
+df$Feeding = df$NE
+```
+
+
+```{r}
+#| eval: TRUE
+formula = bf(Feeding ~ fmax*N/(nhalf+N),
+             nlf(fmax ~ exp(fmaxlog)),   # exp(b0+b1*x)
+             fmaxlog ~ scale(HeadWidth), # b0+b1*x
+             nhalf ~ 1,
+             nl = TRUE)
+```
+
+<div style="height: 32px;"></div>
+
+* Define new parameter `fmaxlog` with its linear model
+* Transform to `fmax~exp(fmaxlog)`
+
+:::
+
+::: {.column width="05%"}
+:::
+
+::: {.column width="45%"}
+
+<br>
+
+```{r}
+#| echo: FALSE
+#| fig-height: 8
+set.seed(1701)
+p1
+```
+
+:::
+
+::::
+
+
+## Continuous variable with link{.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<div style="height: 32px;"></div>
+
+#### Priors
+
+
+
+$$
+\begin{align}
+F_\max&=\exp\left( \beta_{0}+\beta_{1}\cdot\text{HeadWidth}\right)\\
+\Leftrightarrow \log\left( F_\max\right)& =\textcolor{var(--highlight-high-border)}{\boldsymbol{\beta_{0}}}+\textcolor{var(--highlight-high-border)}{\boldsymbol{\beta_{1}}}\cdot\text{HeadWidth}
+\end{align}
+$$
+
+<div style="height: 32px;"></div>
+
+
+```{r}
+#| eval: TRUE
+priors = c(
+  prior(normal(log(40),1), nlpar="fmaxlog", coef="Intercept"),
+  prior(normal(0,1),       nlpar="fmaxlog", coef="scaleHeadWidth"),
+  prior(normal(30,20), nlpar="nhalf", lb=0)
+)
+```
+
+<div style="height: 32px;"></div>
+
+* Priors for intercept and slope of `fmaxlog`,    
+  which is on logscale
+
+:::
+
+::: {.column width="05%"}
+:::
+
+::: {.column width="45%"}
+
+<br>
+
+```{r}
+#| echo: FALSE
+#| fig-height: 8
+set.seed(1701)
+p1
+```
+
+:::
+
+::::
+
+
+## Continuous variable with link{.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+```{r}
+#| echo: FALSE
+#| output: FALSE
+#| fig-height: 8
+
+df$N = df$N0
+df$Feeding = df$NE
+
+formula = bf(Feeding ~ fmax*N/(nhalf+N),
+             nlf(fmax ~ exp(fmaxlog)),
+             fmaxlog ~ scale(HeadWidth),
+             nhalf ~ 1,
+             nl = TRUE)
+
+priors = c(
+  prior(normal(log(40),1), nlpar="fmaxlog", coef="Intercept"),
+  prior(normal(0,1),       nlpar="fmaxlog", coef="scaleHeadWidth"),
+  prior(normal(30,20), nlpar="nhalf", lb=0)
+)
+
+fit.2 = brm(formula,
+            prior = priors,
+            family = poisson(link="identity"),
+            data = df,
+            backend = "cmdstan",
+            file = "fit_example_4_2.rds")
+```
+
+
+```{r}
+#| eval: FALSE
+fit.2 = brm(formula,
+            prior = priors,
+            family = poisson(link="identity"),
+            data = df)
+
+summary(fit.2)
+```
+
+```{r}
+#| echo: FALSE
+summary(fit.2)
+```
+
+
+:::
+
+::: {.column width="05%"}
+:::
+
+::: {.column width="45%"}
+
+
+```{r}
+#| eval: FALSE
+plot(conditional_effects(fit.2,
+                         effects="N:HeadWidth"),
+     points = TRUE)
+```
+
+```{r}
+#| echo: FALSE
+#| fig-height: 8
+set.seed(1701)
+p = plot(conditional_effects(fit.2,
+                             effects="N:HeadWidth",
+                             int_conditions = list(N=1:80)),
+         points = TRUE,
+         point_args = list(alpha=0.5, width=0.5, height=0.5, size=2.5),
+         plot = FALSE)
+p[[1]] +   
+  theme(legend.position = "inside",
+        legend.position.inside = c(0.15, 0.85),
+        legend.background = element_rect(fill="lightgray", color="white")
+  ) +
+  scale_x_continuous(limits=c(0,NA)) +
+  scale_y_continuous(limits=c(0,NA))
+```
+
+* Automatically uses 3 levels for the predictor: $\mu,~~\mu+1\sigma,~~\mu-1\sigma$ 
+
+:::
+
+::::
+
+## Continuous variable with link{.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+#### Trends
+```{r}
+library(emmeans)
+em_trend = emtrends(fit.2, var="HeadWidth", nlpar="fmaxlog") 
+print(em_trend)
+```
+
+<div style="height: 32px;"></div>
+
+* $\log(F_\max)$ increases by $+0.27$ per $1$ unit of size (*additive*)
+
+* $F_\max$ increases by $\times\exp(0.27)=1.31$ per $1$ unit of size (*multiplicative*)
+
+* That's $31\%$ increase per $1$ unit of size
+
+:::
+
+::: {.column width="05%"}
+:::
+
+::: {.column width="45%"}
+
+<div style="height: 1.5em;"></div>
+
+```{r}
+#| eval: TRUE
+#| fig-height: 8
+plot(conditional_effects(fit.2,
+                         effects="HeadWidth",
+                         nlpar="fmax"))
+```
+
+:::
+
+::::
+
+## Continuous variable {.smaller}
+
+#### Summary
+
+* Put a linear model `par ~ varA` inside your nonlinear model
+* Test effects with `hypothesis()` 
+* `scale(varA)` can ease prior specification   
+  back-transform slopes with `emtrends()`
+* Parameter bounds cannot be guaranteed via priors
+* Define linear models on unrestricted scale, manually transform to restricted scale
+* log-link for $0<\text{par}$: `parlog~varA, nlf(par~exp(parlog)`   
+* logit-link for $0<\text{par}<1$: `parlogit~varA, nlf(par~1/(1+exp(-parlogit))`
+
+
+## ... and more! {.smaller}
+
+<br>
+
+* Mix factorial and numerical treatments variables   
+  `par ~ factorA + varB`  
+  `par ~ factorA * varB`  
+* Random effects     
+  `par ~ (1|group)`  
+* Parameter itself has nonlinear relationship with other variable?   
+  Use a GAM!   
+  `par ~ s(var)`
+* Prediction model too complex to just write in `bf(y~...)` ?    
+  Write separate `Stan`-function which is used in `brms` !    
+  `brm(..., stanvars = )`
+

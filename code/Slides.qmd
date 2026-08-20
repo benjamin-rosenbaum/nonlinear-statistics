@@ -1,0 +1,33 @@
+---
+title: "Fitting Nonlinear Models<br>with brms"
+subtitle: "A Bayesian introduction: growth curves, functional responses, TPCs"
+author: "Benjamin Rosenbaum"
+format:
+  revealjs:
+    theme: [white, custom.scss]
+    html-math-method: mathjax
+    width: 1280
+    height: 720
+    slide-number: true
+    code-fold: false
+    code-line-numbers: true
+    incremental: false
+    toc: false
+    embed-resources: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+
+{{< include Slides_01.qmd >}}
+
+{{< include Slides_02.qmd >}}
+
+{{< include Slides_03.qmd >}}
+
+{{< include Slides_04.qmd >}}
+
+{{< include Slides_05.qmd >}}
+
