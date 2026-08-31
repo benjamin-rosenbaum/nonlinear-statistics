@@ -1,6 +1,6 @@
 ---
-title: "Fitting Nonlinear Models<br>with brms"
-subtitle: "A Bayesian introduction: growth curves, functional responses, TPCs"
+title: "Nonlinear Models in brms"
+subtitle: "From curve fitting to statistical modeling"
 author: "Benjamin Rosenbaum"
 format:
   revealjs:
@@ -52,7 +52,7 @@ highlight_colors <- list(
 
 ### Benjamin Rosenbaum
 
-<div style="height: 80px;"></div>
+<div style="height: 100px;"></div>
 
 * Computational Ecology
 
@@ -60,7 +60,7 @@ highlight_colors <- list(
 
 * Statistical consulting & teaching
 
-<div style="height: 56px;"></div>
+<div style="height: 40px;"></div>
 
 [Google Scholar](https://scholar.google.com/citations?user=_OHiB_AAAAAJ&hl=en) | 
 [GitHub](https://github.com/benjamin-rosenbaum) | 
@@ -68,8 +68,16 @@ highlight_colors <- list(
 
 
 :::
-::: {.column width="50%"}
+
+::: {.column width="2.5%"}
+:::
+
+::: {.column width="45%"}
+<div style="height: 12px;"></div>
 ![](pictures/iDiv-eV-logo-en-large-rgb.png)
+
+<div style="height: 12px;"></div>
+
 ![](pictures/iDiv-building-flowers.jpg)
 
 ::: {style="text-align: right; opacity: 0.6; font-size: 0.33em;"}
@@ -96,7 +104,7 @@ Source: Stefan Bernhardt / iDiv&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 <br>
 
 * ... is a brief & dense introduction
-* ... will get you started to do actual nonlinear statistics 
+* ... will get you started with nonlinear statistical modeling 
 * ... has all materials available on GitHub
 * ... can be followed by coding with &nbsp;`Nonlinear_stats.R`
 
@@ -521,6 +529,47 @@ p1 +
 
 ::::
 
+## Nonlinear models in Ecology {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<br>
+
+* Describe a process
+* Mathematical model from theory   
+  <span style="font-size: 0.7em;">"By dividing up total time into a predator's search time and time for prey handling, after some re-arrangement I finally arrive with that formula."</span>
+* Or, phenomenological model  
+  <span style="font-size: 0.7em;">"I want a function linear in (0,0), but it should have an asymptote defined by the predator's maximum feeding rate."</span>
+* Parameters have a meaning
+* We want to test hypotheses related to predictions,    
+  or related to parameters directly
+
+:::
+
+::: {.column width="5%"}
+:::
+
+
+::: {.column width="45%"}
+
+<br>
+
+```{r}
+#| echo: FALSE
+#| fig-height: 8
+
+Fmax  = 20
+Nhalf = 20
+p1 + 
+  stat_function(fun = function(x) Fmax*x/(Nhalf+x),
+                color = "#3366FF", lwd=2)
+```
+:::
+
+::::
+
 ## Nonlinear models {.smaller}
 
 :::: {.columns}
@@ -767,7 +816,7 @@ of observed data $y$ for a parameter value $\theta$
 are most likely?
 
 ::: {style="margin-right: -80px;"}
-* Find *single* parameters value $\theta$ that maximizes $L(\theta)$
+* Find *point estimate* $\theta^*$ that maximizes $L(\theta)$
 :::
 
 **But:** $L(\theta)$ is **not** a probability density function for $\theta$
@@ -1028,6 +1077,8 @@ plot(fit)
 
 ## Why Bayesian? {.smaller}
 
+::: {.column width="60%"}
+
 <br>
 
 * MCMC works with linear and nonlinear models
@@ -1037,6 +1088,21 @@ plot(fit)
   * Means, contrasts, etc.
 * **Direct inference** instead of Null Hypothesis Significance Testing
 * Highly flexible & reliable with **random effects** structures, too
+
+:::
+
+::: {.column width="05%"}
+:::
+
+
+::: {.column width="35%"}
+
+<div style="height: 32px;"></div>
+
+![](pictures/Bayes_question.jpg){width=75%}
+
+
+:::
 
 
 ## Methods & Software {.smaller  .flat-list}

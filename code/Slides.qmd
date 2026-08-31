@@ -1,6 +1,6 @@
 ---
-title: "Fitting Nonlinear Models<br>with brms"
-subtitle: "A Bayesian introduction: growth curves, functional responses, TPCs"
+title: "Nonlinear Models in brms"
+subtitle: "From curve fitting to statistical modeling"
 author: "Benjamin Rosenbaum"
 format:
   revealjs:

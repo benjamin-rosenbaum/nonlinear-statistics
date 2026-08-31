@@ -1,6 +1,6 @@
 ---
-title: "Fitting Nonlinear Models<br>with brms"
-subtitle: "A Bayesian introduction: growth curves, functional responses, TPCs"
+title: "Nonlinear Models in brms"
+subtitle: "From curve fitting to statistical modeling"
 author: "Benjamin Rosenbaum"
 format:
   revealjs:
@@ -349,8 +349,9 @@ formula = bf(Feeding ~ fmax*N/(nhalf+N),
              nhalf ~ 1,
              nl = TRUE)
 priors = c(
-  prior(normal(20,10), nlpar="fmax", lb=0),
-  prior(normal(15,10), nlpar="nhalf", lb=0)
+  prior(normal(40,20), nlpar="fmax", coef="Intercept"),
+  prior(normal(0 ,10), nlpar="fmax", coef="scaleHeadWidth"),
+  prior(normal(30,20), nlpar="nhalf", lb=0)
 )
 fit.1 = brm(formula,
             prior = priors,
@@ -430,7 +431,7 @@ p[[1]] +
 ```{r}
 fixef(fit.1)
 ```
-$F_\max$ increases by $\beta_1=9.72$ per $1\sigma$ increase in size
+$F_\max$ increases by $\beta_1=10.40$ per $1\sigma$ increase in size
 
 <div style="height: 32px;"></div>
 

@@ -1,6 +1,6 @@
 ---
-title: "Fitting Nonlinear Models<br>with brms"
-subtitle: "A Bayesian introduction: growth curves, functional responses, TPCs"
+title: "Nonlinear Models in brms"
+subtitle: "From curve fitting to statistical modeling"
 author: "Benjamin Rosenbaum"
 format:
   revealjs:
@@ -996,7 +996,57 @@ pp_check(fit.2, ndraws=200, type="rootogram")
 
 ## Nonlinear model {.smaller}
 
+
+:::: {.columns}
+
+
+::: {.column width="50%"}
+
+<br>
+
 #### Summary
 
-1. test
-2. test
+<div style="height: 12px;"></div>
+
+`brms` workflow similar for     
+linear / generalized / nonlinear models:
+
+1. Define statistical model
+   * Deterministic part: **nonlinear function**
+   * Stochastic part: distribution 
+   * Priors
+2. Run model
+3. Check MCMC convergence
+4. Check model fit
+
+:::
+
+
+
+::: {.column width="05%"}
+
+:::
+
+
+::: {.column width="45%"}
+
+<br><br>
+
+![](pictures/Checklist.jpg){width=80%}
+
+::: {style="text-align: left; opacity: 0.6; font-size: 0.33em;"}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+https://www.magnific.com/de/autor/studiogstock 
+:::
+
+
+:::
+
+::::
+

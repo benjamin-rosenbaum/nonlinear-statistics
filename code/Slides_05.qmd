@@ -1,6 +1,6 @@
 ---
-title: "Fitting Nonlinear Models<br>with brms"
-subtitle: "A Bayesian introduction: growth curves, functional responses, TPCs"
+title: "Nonlinear Models in brms"
+subtitle: "From curve fitting to statistical modeling"
 author: "Benjamin Rosenbaum"
 format:
   revealjs:
@@ -119,9 +119,9 @@ $r~~~~~~~$ maximum growth rate
 <div style="height: 32px;"></div>
 <div style="height: 32px;"></div>
 
-
-Richards model family includes various individual weight growths model, defined by an exponent $d$:   
-Logistic ($2$), Bertalanffy ($1.5$), Gompertz ($1$), ...
+<span style="font-size: 0.7em;">
+Richards model family includes various individual weight growths model, defined by an exponent $d$: Logistic ($2$), Bertalanffy ($1.5$), Gompertz ($1$), ...
+</span>
 
 :::
 
