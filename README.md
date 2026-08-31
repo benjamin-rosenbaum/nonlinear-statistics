@@ -7,7 +7,7 @@ General knowledge of statistical modeling is needed (ANOVA, linear regression, g
 ### Materials
 
 * [Slides](https://benjamin-rosenbaum.github.io/nonlinear-statistics/Slides.html)
-* [R Code](https://benjamin-rosenbaum.github.io/nonlinear-statistics/code/Nonlinear_stats.R) 
+* [R Code](https://benjamin-rosenbaum.github.io/nonlinear-statistics/Nonlinear_stats.R) 
 
 
 ### Software requirements
