@@ -4,6 +4,11 @@ Nonlinear models are central to ecology (e.g. growth, species interactions, ther
 
 General knowledge of statistical modeling is needed (ANOVA, linear regression, generalized linear models). Some experience with Bayesian statistics is helpful, but not required.
 
+### Materials
+
+* [Slides](https://benjamin-rosenbaum.github.io/nonlinear-statistics/Slides.html)
+* [R Code](https://benjamin-rosenbaum.github.io/nonlinear-statistics/code/Nonlinear_stats.R) 
+
 
 ### Software requirements
 
