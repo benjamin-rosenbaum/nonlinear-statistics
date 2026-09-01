@@ -24,3 +24,8 @@ install.packages("emmeans") # post-hoc analysis
 install.packages("BayesFR") # example datasets
 install.packages("rTPC")    # example datasets
 ```
+
+### Notes
+
+I also have a general introduction to Bayesian statistics with brms:     
+[github.com/benjamin-rosenbaum/bayesian-intro](https://github.com/benjamin-rosenbaum/bayesian-intro)
