@@ -30,5 +30,5 @@ install.packages("rTPC")    # example datasets
 * I also have a general introduction to Bayesian statistics with `brms`:     
   [github.com/benjamin-rosenbaum/bayesian-intro](https://github.com/benjamin-rosenbaum/bayesian-intro)
 * For more examples with functional responses, see my R-package `BayesFR`:     
-  [github.com/benjamin-rosenbaum/BayesFR](https://github.com/benjamin-rosenbaum/BayesFR)
+  [benjamin-rosenbaum.github.io/BayesFR](https://benjamin-rosenbaum.github.io/BayesFR)
   

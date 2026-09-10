@@ -183,7 +183,7 @@ formula = bf(Feeding ~ fmax*N/(nhalf+N),
 
 <div style="height: 32px;"></div>
 
-* Make parameters dependent on predictor(s)
+* Make parameter(s) dependent on predictor
 * Use classic `lm`-notation 
 * `0+PredSize` prevents dummy-coding: parameters are $F_\max(\operatorname{small}), F_\max(\operatorname{medium}), F_\max(\operatorname{large})$ 
 

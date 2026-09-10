@@ -194,7 +194,7 @@ formula = bf(Feeding ~ fmax*N/(nhalf+N),
 
 <div style="height: 32px;"></div>
 
-* Make parameters dependent on predictor(s)
+* Make parameter(s) dependent on predictor
 * Use classic `lm`-notation 
 * `scale()` the predictor to `mean=0`, `sd=1`    
   can make pars more interpretable:   
