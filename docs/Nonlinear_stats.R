@@ -30,8 +30,8 @@ priors  = prior(normal(0,1), class="b")
 
 fit.1   = brm(formula,
               prior = priors,
-              backend = "cmdstanr",
-              cores = 4,
+              # backend = "stanli",
+              # cores = 4,
               data = df)
 
 summary(fit.1)
@@ -69,8 +69,8 @@ priors  = c(
 fit.2   = brm(formula,
               prior = priors,
               family = poisson(link="identity"),
-              cores = 4,
-              backend = "cmdstanr",
+              # cores = 4,
+              # backend = "stanli",
               data = df)
 
 summary(fit.2)
@@ -128,8 +128,8 @@ priors = c(
 fit.1 = brm(formula,
             prior = priors,
             family = poisson(link="identity"),
-            cores = 4,
-            backend = "cmdstanr",
+            # cores = 4,
+            # backend = "stanli",
             data = df)
 
 summary(fit.1)
@@ -201,8 +201,8 @@ priors = c(
 fit.0 = brm(formula,
             prior = priors,
             family = poisson(link="identity"),
-            cores = 4,
-            backend = "cmdstanr",
+            # cores = 4,
+            # backend = "stanli",
             data = df)
 
 summary(fit.0)
@@ -255,8 +255,8 @@ priors = c(
 fit.1 = brm(formula,
             prior = priors,
             family = poisson(link="identity"),
-            cores = 4,
-            backend = "cmdstanr",
+            # cores = 4,
+            # backend = "stanli",
             data = df)
 
 summary(fit.1)
@@ -329,8 +329,8 @@ priors = c(
 fit.2 = brm(formula,
             prior = priors,
             family = poisson(link="identity"),
-            cores = 4,
-            backend = "cmdstanr",
+            # cores = 4,
+            # backend = "stanli",
             data = df)
 
 summary(fit.2)

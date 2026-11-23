@@ -25,6 +25,17 @@ install.packages("BayesFR") # example datasets
 install.packages("rTPC")    # example datasets
 ```
 
+Additionally, I recommend to install [stanli](https://github.com/seantalts/stanli/blob/main/r/README.md), which allows brms to use a compilation-free and highly efficient tool for model fitting. Start a fresh R session and run these lines:
+
+```r
+install.packages("remotes")
+install.packages("stanli", repos = "https://seantalts.r-universe.dev")
+stanli::stanli_install()
+remotes::install_github("paul-buerkner/brms")
+```
+Then, any brms model can be run as `brm(..., backend="stanli")`
+
+
 ### Notes
 
 * I also have a general introduction to Bayesian statistics with `brms`:     
